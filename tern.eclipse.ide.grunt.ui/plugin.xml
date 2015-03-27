@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   	<!--======================================================================================-->
+	<!-- Grunt Explorer View                                      						             -->
+	<!--======================================================================================-->
+	
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+          name="%viewCategory.name"
+          id="tern.eclipse.ide.grunt.ui.views">
+      </category>
+      <view
+            name="%GruntExplorerView.name"
+            icon="$nl$/icons/full/eview16/explorer.png"
+            category="tern.eclipse.ide.grunt.ui.views"
+            class="tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView"
+            id="tern.eclipse.ide.grunt.ui.views.GruntExplorerView">
+      </view>
+   </extension>
+   
+</plugin>
