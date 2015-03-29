@@ -6,20 +6,13 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 
 import tern.ITernFile;
-import tern.angular.AngularType;
-import tern.angular.modules.Directive;
-import tern.angular.modules.DirectiveValue;
-import tern.angular.modules.Module;
-import tern.angular.protocol.completions.TernAngularCompletionsQuery;
 import tern.eclipse.ide.core.IIDETernProject;
-import tern.eclipse.ide.core.TernCorePlugin;
+import tern.eclipse.ide.grunt.core.query.TernGruntTasksQuery;
 import tern.eclipse.ide.grunt.internal.core.GruntCoreMessages;
 import tern.eclipse.ide.grunt.internal.core.Logger;
-import tern.eclipse.ide.grunt.internal.core.TernGruntTaskQuery;
 import tern.server.protocol.IJSONObjectHelper;
 import tern.server.protocol.completions.ITernCompletionCollector;
 import tern.server.protocol.completions.TernCompletionProposalRec;
-import tern.utils.StringUtils;
 
 public class TasksContainer implements IGruntNode {
 
@@ -67,7 +60,7 @@ public class TasksContainer implements IGruntNode {
 				tasks.clear();
 				IIDETernProject ternProject = gruntProject.getTernProject();
 
-				TernGruntTaskQuery query = new TernGruntTaskQuery();
+				TernGruntTasksQuery query = new TernGruntTasksQuery();
 				IFile gruntFile = gruntProject.getGruntFile();
 				if (!gruntFile.exists()) {
 					return;
@@ -82,14 +75,18 @@ public class TasksContainer implements IGruntNode {
 									TernCompletionProposalRec proposal,
 									Object completion,
 									IJSONObjectHelper jsonObjectHelper) {
-								tasks.add(new Task(proposal.name));							
+								tasks.add(new Task(proposal.name,
+										TasksContainer.this));
 							}
 						});
 				refreshDirectives = false;
 			}
 		} catch (Exception e) {
-			Logger.logException(
-					"Error while refresh grunt tasks.", e);
+			Logger.logException("Error while refresh grunt tasks.", e);
 		}
+	}
+
+	public GruntProject getGruntProject() {
+		return gruntProject;
 	}
 }

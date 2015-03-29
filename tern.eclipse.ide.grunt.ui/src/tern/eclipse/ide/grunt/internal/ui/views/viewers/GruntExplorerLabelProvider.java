@@ -1,4 +1,4 @@
-package tern.eclipse.ide.grunt.internal.ui.views;
+package tern.eclipse.ide.grunt.internal.ui.views.viewers;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

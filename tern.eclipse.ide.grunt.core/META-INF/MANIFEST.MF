@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  tern.core,
  org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
-Export-Package: tern.eclipse.ide.grunt.core
+Export-Package: tern.eclipse.ide.grunt.core,
+ tern.eclipse.ide.grunt.core.query
 Bundle-Activator: tern.eclipse.ide.grunt.internal.core.GruntCorePlugin
 Import-Package: com.eclipsesource.json;version="[0.9.2,0.9.3)"
