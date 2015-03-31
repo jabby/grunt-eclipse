@@ -159,7 +159,7 @@ public class GruntProject implements IGruntNode {
 
 	public boolean hasGruntFile(IFile file) {
 		for (GruntFile gruntFile : gruntFiles) {
-			if (file.equals(gruntFile.getFile())) {
+			if (file.equals(gruntFile.getGruntFileResource())) {
 				return true;
 			}
 		}

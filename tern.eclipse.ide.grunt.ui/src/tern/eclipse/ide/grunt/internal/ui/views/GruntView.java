@@ -25,7 +25,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -52,6 +54,7 @@ import tern.eclipse.ide.grunt.core.GruntProject;
 import tern.eclipse.ide.grunt.core.IGruntNode;
 import tern.eclipse.ide.grunt.core.IGruntNodeExecutable;
 import tern.eclipse.ide.grunt.core.IGruntNodeExecutableProvider;
+import tern.eclipse.ide.grunt.core.Target;
 import tern.eclipse.ide.grunt.core.Task;
 import tern.eclipse.ide.grunt.core.launch.GruntLaunchConfigurationDelegate;
 import tern.eclipse.ide.grunt.core.query.TernGruntTaskQuery;
@@ -89,15 +92,26 @@ public class GruntView extends ViewPart implements IResourceChangeListener {
 		FillLayout layout = new FillLayout();
 		parent.setLayout(layout);
 
+		createGruntFilesViewer(parent);
+
+		registerActions();
+		registerContextMenu();
+		initializeDragAndDrop();
+	}
+
+	protected void createGruntFilesViewer(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		viewer.setContentProvider(new GruntContentProvider());
 		viewer.setLabelProvider(new GruntLabelProvider());
 
 		viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
-
-		registerActions();
-		registerContextMenu();
-		initializeDragAndDrop();
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				handleSelectionChanged((IStructuredSelection) event
+						.getSelection());
+			}
+		});
 	}
 
 	@Override
@@ -305,7 +319,7 @@ public class GruntView extends ViewPart implements IResourceChangeListener {
 
 	public void tryOpenInEditor(Object selection) {
 		if (selection instanceof GruntFile) {
-			IFile file = ((GruntFile) selection).getFile();
+			IFile file = ((GruntFile) selection).getGruntFileResource();
 			EditorUtils.openInEditor(file, 0, 0, true);
 		} else if (selection instanceof IGruntNodeExecutable) {
 			openInEditor(((IGruntNodeExecutable) selection));
@@ -317,7 +331,7 @@ public class GruntView extends ViewPart implements IResourceChangeListener {
 		final IIDETernProject ternProject = gruntProject.getTernProject();
 		TernGruntTaskQuery query = new TernGruntTaskQuery(
 				task.getExecutableName());
-		IFile gruntFile = task.getGruntFile().getFile();
+		IFile gruntFile = task.getGruntFile().getGruntFileResource();
 		if (!gruntFile.exists()) {
 			return;
 		}
@@ -557,6 +571,8 @@ public class GruntView extends ViewPart implements IResourceChangeListener {
 			GruntFile project = (GruntFile) node;
 			return project.getGruntFileName();
 		} else if (node instanceof Task) {
+			return ((Task) node).getName();
+		} else if (node instanceof Target) {
 			// AntTargetNode target = (AntTargetNode) node;
 			// StringBuffer message = new StringBuffer();
 			// Enumeration<String> depends =
@@ -577,7 +593,7 @@ public class GruntView extends ViewPart implements IResourceChangeListener {
 			// message.append(description);
 			// message.append('\"');
 			// }
-			return ((Task) node).getName();
+			return ((Target) node).getName();
 		}
 		return null;
 	}

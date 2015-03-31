@@ -105,7 +105,7 @@ public class GruntFile implements IGruntNode, IGruntNodeExecutableProvider {
 		return gruntProject;
 	}
 
-	public IFile getFile() {
+	public IFile getGruntFileResource() {
 		return gruntFile;
 	}
 
