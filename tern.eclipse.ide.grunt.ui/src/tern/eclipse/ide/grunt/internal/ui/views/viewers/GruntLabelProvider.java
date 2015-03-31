@@ -9,7 +9,7 @@ import tern.eclipse.ide.grunt.core.IGruntNode;
 import tern.eclipse.ide.grunt.core.Task;
 import tern.eclipse.ide.grunt.internal.ui.ImageResource;
 
-public class GruntExplorerLabelProvider extends LabelProvider {
+public class GruntLabelProvider extends LabelProvider {
 
 	private final static WorkbenchLabelProvider WORKBENCH_LABEL_PROVIDER = new WorkbenchLabelProvider();
 

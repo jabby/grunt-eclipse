@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 
 import tern.eclipse.ide.grunt.internal.ui.GruntUIMessages;
 import tern.eclipse.ide.grunt.internal.ui.ImageResource;
-import tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView;
+import tern.eclipse.ide.grunt.internal.ui.views.GruntView;
 
 /**
  * This action refresh the explorer tree.
@@ -22,9 +22,9 @@ import tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView;
  */
 public class RefreshExplorerAction extends Action {
 
-	private final GruntExplorerView explorer;
+	private final GruntView explorer;
 
-	public RefreshExplorerAction(GruntExplorerView explorer) {
+	public RefreshExplorerAction(GruntView explorer) {
 		this.explorer = explorer;
 		super.setText(GruntUIMessages.RefreshExplorerAction_text);
 		super.setToolTipText(GruntUIMessages.RefreshExplorerAction_tooltip);

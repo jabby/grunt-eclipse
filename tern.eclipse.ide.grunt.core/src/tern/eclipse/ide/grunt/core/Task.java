@@ -23,4 +23,8 @@ public class Task implements IGruntNode {
 		return parent;
 	}
 
+	public GruntProject getGruntProject() {
+		return getParent().getGruntProject();
+	}
+
 }

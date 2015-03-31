@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
+<!--
+###############################################################################
+# Copyright (c) 2015 - present Angelo Zerr and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Angelo Zerr <angelo.zerr@gmail.com> - Initial API and implementation 
+###############################################################################
+ -->
 <plugin>
 
    	<!--======================================================================================-->
@@ -13,12 +25,28 @@
           id="tern.eclipse.ide.grunt.ui.views">
       </category>
       <view
-            name="%GruntExplorerView.name"
+            name="%GruntView.name"
             icon="$nl$/icons/full/eview16/explorer.png"
             category="tern.eclipse.ide.grunt.ui.views"
-            class="tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView"
-            id="tern.eclipse.ide.grunt.ui.views.GruntExplorerView">
+            class="tern.eclipse.ide.grunt.internal.ui.views.GruntView"
+            id="tern.eclipse.ide.grunt.ui.views.GruntView">
       </view>
    </extension>
    
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+     <launchConfigurationTypeImage
+        icon="icons/grunt.png"
+        configTypeID="tern.eclipse.ide.grunt.core.launch"
+        id="tern.eclipse.ide.grunt.core.launch.image">
+    </launchConfigurationTypeImage>
+  </extension>
+
+  <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+        type="tern.eclipse.ide.grunt.core.launch"
+        class="tern.eclipse.ide.grunt.internal.ui.launch.GruntLaunchTabGroup"
+        id="tern.eclipse.ide.grunt.core.launch.tabgroup">
+    </launchConfigurationTabGroup>
+  </extension>
+
 </plugin>

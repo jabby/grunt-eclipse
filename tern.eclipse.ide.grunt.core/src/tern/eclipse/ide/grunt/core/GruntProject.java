@@ -128,4 +128,8 @@ public class GruntProject implements IGruntNode {
 	public static IFile getGruntFile(IProject project) {
 		return project.getFile(GRUNT_FILE);
 	}
+
+	public String getDisplayName() {
+		return getTernProject().getProject().getName();
+	}
 }

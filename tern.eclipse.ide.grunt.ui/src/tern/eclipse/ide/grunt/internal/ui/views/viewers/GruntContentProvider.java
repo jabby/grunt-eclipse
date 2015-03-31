@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.Viewer;
 import tern.eclipse.ide.grunt.core.GruntProject;
 import tern.eclipse.ide.grunt.core.TasksContainer;
 
-public class GruntExplorerContentProvider implements ITreeContentProvider {
+public class GruntContentProvider implements ITreeContentProvider {
 
 	private static final Object[] EMPTY_OBJECT = new Object[0];
 
