@@ -1,14 +1,18 @@
 package tern.eclipse.ide.grunt.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import tern.eclipse.ide.core.IIDETernProject;
@@ -27,19 +31,16 @@ public class GruntProject implements IGruntNode {
 	private static final String GRUNT_PROJECT = GruntProject.class.getName();
 
 	private final IIDETernProject ternProject;
-	private final Object[] children;
-	private final TasksContainer tasksContainer;
+	private final Collection<GruntFile> gruntFiles;
 
 	GruntProject(IIDETernProject ternProject) throws CoreException {
 		this.ternProject = ternProject;
-		this.tasksContainer = new TasksContainer(this);
-		this.children = new Object[1];
-		children[0] = tasksContainer;
+		this.gruntFiles = new ArrayList<GruntFile>();
 		ternProject.setData(GRUNT_PROJECT, this);
 		ternProject.addServerListener(new TernServerAdapter() {
 			@Override
 			public void onStop(ITernServer server) {
-				tasksContainer.clear();
+				gruntFiles.clear();
 			}
 		});
 	}
@@ -54,11 +55,8 @@ public class GruntProject implements IGruntNode {
 	public static boolean hasGruntNature(IProject project) {
 		if (project.isAccessible()) {
 			try {
-				if (TernCorePlugin.hasTernNature(project)
-						&& TernCorePlugin.getTernProject(project).hasPlugin(
-								TernPlugin.grunt)) {
-					return getGruntFile(project).exists();
-				}
+				return (TernCorePlugin.hasTernNature(project) && TernCorePlugin
+						.getTernProject(project).hasPlugin(TernPlugin.grunt));
 			} catch (CoreException e) {
 				Logger.logException("Error Grunt project", e);
 			}
@@ -104,8 +102,22 @@ public class GruntProject implements IGruntNode {
 		return gruntProjects.toArray(GruntProject.EMPTY_PROJECT);
 	}
 
-	public TasksContainer getTasksContainer() {
-		return tasksContainer;
+	public GruntFile[] getGruntFiles() {
+		return gruntFiles.toArray(GruntFile.EMPTY_FILE);
+	}
+
+	public GruntFile addGruntFile(IFile gruntFile) {
+		GruntFile file = new GruntFile(gruntFile, this);
+		addGruntFile(file);
+		return file;
+	}
+
+	public void addGruntFile(GruntFile file) {
+		gruntFiles.add(file);
+	}
+
+	public void removeGruntFile(GruntFile file) {
+		gruntFiles.remove(file);
 	}
 
 	@Override
@@ -117,19 +129,41 @@ public class GruntProject implements IGruntNode {
 		return ternProject;
 	}
 
-	public Object[] getChildren() {
-		return children;
-	}
-
-	public IFile getGruntFile() {
-		return getGruntFile(getTernProject().getProject());
-	}
-
-	public static IFile getGruntFile(IProject project) {
-		return project.getFile(GRUNT_FILE);
-	}
-
 	public String getDisplayName() {
 		return getTernProject().getProject().getName();
 	}
+
+	public void clearFiles() {
+		gruntFiles.clear();
+	}
+
+	public void clearTasks() {
+		for (GruntFile file : gruntFiles) {
+			file.clear();
+		}
+	}
+
+	public static IFile getFileForLocation(String path) {
+		if (path == null) {
+			return null;
+		}
+		IPath filePath = new Path(path);
+		IFile file = null;
+		IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
+				.findFilesForLocation(filePath);
+		if (files.length > 0) {
+			return files[0];
+		}
+		return null;
+	}
+
+	public boolean hasGruntFile(IFile file) {
+		for (GruntFile gruntFile : gruntFiles) {
+			if (file.equals(gruntFile.getFile())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

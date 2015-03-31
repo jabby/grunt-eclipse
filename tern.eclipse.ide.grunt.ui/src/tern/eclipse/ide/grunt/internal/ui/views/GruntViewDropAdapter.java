@@ -51,22 +51,11 @@ public class GruntViewDropAdapter extends DropTargetAdapter {
 	 *            the string to process
 	 */
 	private void processString(String gruntFileName) {
-		System.err.println(gruntFileName);
-		/*IFile gruntFile = GruntUtil.getFileForLocation(gruntFileName, null);
-		if (!GruntUtil.isKnownGruntFile(gruntFile)) {
+		IFile gruntFile = GruntProject.getFileForLocation(gruntFileName);
+		if (gruntFile == null) {
 			return;
 		}
-		String name = gruntFile.getFullPath().toString();
-		GruntProject[] existingProjects = view.getProjects();
-		for (int j = 0; j < existingProjects.length; j++) {
-			GruntProjectNodeProxy existingProject = (GruntProjectNodeProxy) existingProjects[j];
-			if (existingProject.getBuildFileName().equals(name)) {
-				// Don't parse projects that have already been added.
-				return;
-			}
-		}
-		GruntProjectNode project = new GruntProjectNodeProxy(name);
-		view.addProject(project);*/
+		view.addGruntFile(gruntFile);
 	}
 
 	/*

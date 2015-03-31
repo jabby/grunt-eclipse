@@ -10,6 +10,7 @@
  */
 package tern.eclipse.ide.grunt.internal.ui;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -63,4 +64,19 @@ public class GruntUIPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	/**
+	 * Returns the {@link IDialogSettings} section with the given name. Creates
+	 * a new section if one does not exist.
+	 * 
+	 * @param name
+	 * @return the {@link IDialogSettings} section with the given name
+	 */
+	public IDialogSettings getDialogSettingsSection(String name) {
+		IDialogSettings dialogSettings = getDialogSettings();
+		IDialogSettings section = dialogSettings.getSection(name);
+		if (section == null) {
+			section = dialogSettings.addNewSection(name);
+		}
+		return section;
+	}
 }

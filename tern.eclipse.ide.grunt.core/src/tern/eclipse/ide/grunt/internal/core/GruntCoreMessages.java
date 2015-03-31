@@ -25,9 +25,6 @@ public final class GruntCoreMessages extends NLS {
 
 	private static ResourceBundle fResourceBundle;
 
-	// Tasks
-	public static String Tasks_label;
-
 	private GruntCoreMessages() {
 	}
 

@@ -22,6 +22,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.RuntimeProcess;
 
 import tern.eclipse.ide.grunt.core.GruntProject;
+import tern.eclipse.ide.grunt.core.IGruntNodeExecutable;
 import tern.eclipse.ide.grunt.core.Task;
 import tern.eclipse.ide.grunt.internal.core.Logger;
 
@@ -54,18 +55,19 @@ public class GruntLaunchConfigurationDelegate extends
 		GruntProject gruntProject = getProject(configuration);
 		String taskName = getTasks(configuration);
 
-		String file = gruntProject.getGruntFile().getLocation().toOSString();
+		String file = ""; //gruntProject.getGruntFile().getLocation().toOSString();
 		String filePath = file; // ResourcesPlugin.getWorkspace().getRoot()
 		// .findMember(file).getLocation().toOSString();
 		// path is relative, so can not found it.
 		// cmdLine.add(filePath);
 
-		cmdLine.add("node");
+		//cmdLine.add("node");
+		cmdLine.add("grunt.cmd");
 		// cmdLine.add("node_modules/grunt/lib/grunt");cmdLine.add("grunt");
-		cmdLine.add("node_modules/grunt-cli/bin/grunt");
+		//cmdLine.add("node_modules/grunt-cli/bin/grunt");
 		cmdLine.add("--no-color");
 		// cmdLine.add("--force");
-		cmdLine.add(taskName);
+		cmdLine.add("default");
 		String[] cmds = {};
 		cmds = cmdLine.toArray(cmds);
 
@@ -94,8 +96,8 @@ public class GruntLaunchConfigurationDelegate extends
 		return null;
 	}
 
-	public static ILaunchConfiguration getOrCreate(Task task) {
-		return getOrCreate(task.getGruntProject(), task.getName());
+	public static ILaunchConfiguration getOrCreate(IGruntNodeExecutable task) {
+		return getOrCreate(task.getGruntProject(), task.getExecutableName());
 	}
 
 	public static ILaunchConfiguration getOrCreate(GruntProject project,
