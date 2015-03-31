@@ -1,46 +1,48 @@
 package tern.eclipse.ide.grunt.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 
 import tern.ITernFile;
 import tern.eclipse.ide.core.IIDETernProject;
 import tern.eclipse.ide.grunt.core.query.TernGruntTasksQuery;
-import tern.eclipse.ide.grunt.internal.core.GruntCoreMessages;
 import tern.eclipse.ide.grunt.internal.core.Logger;
 import tern.server.protocol.IJSONObjectHelper;
 import tern.server.protocol.completions.ITernCompletionCollector;
 import tern.server.protocol.completions.TernCompletionProposalRec;
 
-public class TasksContainer implements IGruntNode {
+public class GruntFile implements IGruntNode, IGruntNodeExecutableProvider {
 
+	public static final GruntFile[] EMPTY_FILE = new GruntFile[0];
+	private final IFile gruntFile;
 	private final GruntProject gruntProject;
-	private boolean refreshDirectives;
+	private boolean refreshTasks;
 	private final Object lock = new Object();
 
-	private final List<Task> tasks;
+	private final Map<String, Task> tasks;
 
-	public TasksContainer(GruntProject gruntProject) {
+	public GruntFile(IFile gruntFile, GruntProject gruntProject) {
+		this.gruntFile = gruntFile;
 		this.gruntProject = gruntProject;
-		this.tasks = new ArrayList<Task>();
+		this.tasks = new LinkedHashMap<String, Task>();
 		clear();
 	}
 
 	@Override
 	public String getName() {
-		return GruntCoreMessages.Tasks_label;
+		return gruntFile.getName();
 	}
 
 	public void clear() {
-		this.refreshDirectives = true;
+		this.refreshTasks = true;
 		this.tasks.clear();
 	}
 
 	public Task[] getTasks() {
 		refreshIfNeeded();
-		return tasks.toArray(Task.EMPTY_TASK);
+		return tasks.values().toArray(Task.EMPTY_TASK);
 	}
 
 	public boolean hasTasks() {
@@ -50,18 +52,17 @@ public class TasksContainer implements IGruntNode {
 
 	protected void refreshIfNeeded() {
 		try {
-			if (!refreshDirectives) {
+			if (!refreshTasks) {
 				return;
 			}
 			synchronized (lock) {
-				if (!refreshDirectives) {
+				if (!refreshTasks) {
 					return;
 				}
 				tasks.clear();
 				IIDETernProject ternProject = gruntProject.getTernProject();
 
 				TernGruntTasksQuery query = new TernGruntTasksQuery();
-				IFile gruntFile = gruntProject.getGruntFile();
 				if (!gruntFile.exists()) {
 					return;
 				}
@@ -75,18 +76,49 @@ public class TasksContainer implements IGruntNode {
 									TernCompletionProposalRec proposal,
 									Object completion,
 									IJSONObjectHelper jsonObjectHelper) {
-								tasks.add(new Task(proposal.name,
-										TasksContainer.this));
+								Task task = addTask(proposal.name);
+								Iterable<Object> targets = jsonObjectHelper
+										.getList(completion, "targets");
+								if (targets != null) {
+									for (Object target : targets) {
+										String targetName = jsonObjectHelper
+												.getText(target, "name");
+										task.addTarget(targetName);
+									}
+								}
 							}
 						});
-				refreshDirectives = false;
+				refreshTasks = false;
 			}
 		} catch (Exception e) {
 			Logger.logException("Error while refresh grunt tasks.", e);
 		}
 	}
 
+	public Task addTask(String name) {
+		Task task = new Task(name, this);
+		this.tasks.put(task.getName(), task);
+		return task;
+	}
+
 	public GruntProject getGruntProject() {
 		return gruntProject;
+	}
+
+	public IFile getGruntFileResource() {
+		return gruntFile;
+	}
+
+	public String getGruntFileName() {
+		return gruntFile.getFullPath().toOSString();
+	}
+
+	@Override
+	public IGruntNodeExecutable getExecutable() {
+		return getTask("default");
+	}
+
+	public Task getTask(String name) {
+		return tasks.get(name);
 	}
 }

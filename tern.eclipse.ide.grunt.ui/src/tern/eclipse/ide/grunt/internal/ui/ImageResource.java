@@ -37,7 +37,10 @@ public class ImageResource {
 	private static final String URL_OBJ = "full/obj16/";
 
 	// General Object Images
+	public static final String IMG_GRUNTFILE = "gruntfile";
 	public static final String IMG_TASK = "task";
+	public static final String IMG_TASK_DEFAULT = "task_default";
+	public static final String IMG_TARGET = "target";
 	public static final String IMG_ELCL_REFRESH = "refresh";
 
 	static {
@@ -121,7 +124,10 @@ public class ImageResource {
 		imageDescriptors = new HashMap<String, ImageDescriptor>();
 
 		// load general object images
+		registerImage(IMG_GRUNTFILE, URL_OBJ + IMG_GRUNTFILE + ".png");
 		registerImage(IMG_TASK, URL_OBJ + IMG_TASK + ".png");
+		registerImage(IMG_TASK_DEFAULT, URL_OBJ + IMG_TASK_DEFAULT + ".png");
+		registerImage(IMG_TARGET, URL_OBJ + IMG_TARGET + ".png");
 		registerImage(IMG_ELCL_REFRESH, URL_ELCL + IMG_ELCL_REFRESH + ".gif");
 	}
 

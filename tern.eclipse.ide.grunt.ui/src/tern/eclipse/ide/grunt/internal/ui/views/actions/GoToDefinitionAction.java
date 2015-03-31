@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import tern.eclipse.ide.grunt.internal.ui.GruntUIMessages;
-import tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView;
+import tern.eclipse.ide.grunt.internal.ui.views.GruntView;
 
 /**
  * This action opens in an editor the selected element of the tree of the
@@ -23,14 +23,14 @@ import tern.eclipse.ide.grunt.internal.ui.views.GruntExplorerView;
  */
 public class GoToDefinitionAction extends Action {
 
-	private final GruntExplorerView explorer;
+	private final GruntView explorer;
 
-	public GoToDefinitionAction(GruntExplorerView explorer) {
+	public GoToDefinitionAction(GruntView explorer) {
 		this.explorer = explorer;
 		super.setText(GruntUIMessages.GoToDefinitionAction_text);
 		super.setToolTipText(GruntUIMessages.GoToDefinitionAction_tooltip);
-		//super.setImageDescriptor(ImageResource
-		//		.getImageDescriptor(ImageResource.IMG_ELCL_GOTO_DEF));
+		// super.setImageDescriptor(ImageResource
+		// .getImageDescriptor(ImageResource.IMG_ELCL_GOTO_DEF));
 	}
 
 	@Override

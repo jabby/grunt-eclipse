@@ -30,8 +30,8 @@ public final class GruntUIMessages extends NLS {
 	public static String RefreshExplorerAction_tooltip;
 	public static String GoToDefinitionAction_text;
 	public static String GoToDefinitionAction_tooltip;
-	public static String GruntExplorerView_openFile_error;
-	public static String GruntExplorerView_openFileDialog_title;
+	public static String GruntView_openFile_error;
+	public static String GruntView_openFileDialog_title;
 
 	private GruntUIMessages() {
 	}
